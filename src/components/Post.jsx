@@ -36,7 +36,7 @@ const Post = ({
       .eq('id', postInfo.id);
 
     let existingComments;
-    if (data[0].comments === null) {
+    if (data[0].comments === null || data[0].comments === '') {
       existingComments = [];
     } else {
       existingComments = JSON.parse(data[0].comments);

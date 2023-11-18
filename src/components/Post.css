@@ -50,3 +50,7 @@
 .icon:hover {
   cursor: pointer;
 }
+
+img {
+  max-width: 30%;
+}
