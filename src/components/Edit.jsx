@@ -2,11 +2,12 @@ import Navbar from './Navbar';
 import { createClient } from '@supabase/supabase-js';
 import './Create.css';
 
-const Create = ({
+const Edit = ({
   allInputs,
   onInput,
   allPosts,
   resetInput,
+  editId,
   search,
   onSearch,
 }) => {
@@ -15,14 +16,16 @@ const Create = ({
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6anJoZmlzZHhqcHJxZHhucHdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAxMDAwNjcsImV4cCI6MjAxNTY3NjA2N30.mk-xFry6cPpSH3qLt8R59NpwWj6Kx5sfybPQPDRlwmw';
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const addPost = async () => {
+  const editPost = async () => {
     const { data, error } = await supabase
       .from('NBA Posts')
-      .insert([
-        { title: allInputs[0], content: allInputs[1], image: allInputs[2] },
-      ])
-      .select();
-    alert('Post Created!');
+      .update({
+        title: allInputs[0],
+        content: allInputs[1],
+        image: allInputs[2],
+      })
+      .eq('id', editId);
+    alert('Post Updated!');
     onInput();
     allPosts();
   };
@@ -32,12 +35,12 @@ const Create = ({
       <header>
         <Navbar
           onReset={resetInput}
-          handleSearch={onSearch}
           searchInput={search}
+          handleSearch={onSearch}
         />
       </header>
       <section id="form">
-        <h1>Create A Post</h1>
+        <h1>Edit Post</h1>
         <div className="inputs">
           <input
             type="text"
@@ -61,12 +64,12 @@ const Create = ({
             onChange={onInput}
           ></input>
         </div>
-        <button name="add-button" onClick={addPost}>
-          Add Post
+        <button name="add-button" onClick={editPost}>
+          Edit Post
         </button>
       </section>
     </>
   );
 };
 
-export default Create;
+export default Edit;

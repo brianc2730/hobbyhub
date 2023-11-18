@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom';
 
 import './Home.css';
 
-const Home = ({ allPosts, sortPosts }) => {
+const Home = ({ allPosts, sortPosts, resetInput, search, onSearch }) => {
   return (
     <>
       <header>
-        <Navbar />
+        <Navbar
+          onReset={resetInput}
+          searchInput={search}
+          handleSearch={onSearch}
+        />
       </header>
       <section id="button-bar">
         <p>Sort By: </p>

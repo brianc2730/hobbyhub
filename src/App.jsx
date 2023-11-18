@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import Home from './components/Home';
 import Create from './components/Create';
 import Post from './components/Post';
+import Edit from './components/Edit';
 import './App.css';
 
 const App = () => {
@@ -13,11 +14,27 @@ const App = () => {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   const [inputs, setInputs] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     getPosts();
   }, []);
+
+  const handleSearchInput = async (e) => {
+    setSearchInput(e.target.value);
+
+    const { data, error } = await supabase
+      .from('NBA Posts')
+      .select('*')
+      .ilike('title', e.target.value);
+
+    if (e.target.value === '') {
+      getPosts();
+    }
+
+    setPosts(data);
+  };
 
   const getPosts = async (e) => {
     if (e && e.target.name === 'new-button') {
@@ -62,7 +79,7 @@ const App = () => {
   const onInputChange = (e) => {
     let newInputs = [...inputs];
 
-    if (!e) {
+    if (!e || e.currentTarget.id === 'navbar-right') {
       newInputs[0] = '';
       newInputs[1] = '';
       newInputs[2] = '';
@@ -81,12 +98,33 @@ const App = () => {
     setInputs(newInputs);
   };
 
+  const editInput = (e) => {
+    const clickedId = e.currentTarget.id.slice(0, 2);
+    const postEdited = posts.filter((post) => post.id == clickedId);
+
+    const editInputs = [
+      postEdited[0].title,
+      postEdited[0].content,
+      postEdited[0].image,
+    ];
+
+    setInputs(editInputs);
+  };
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<Home allPosts={posts} sortPosts={getPosts} />}
+          element={
+            <Home
+              allPosts={posts}
+              sortPosts={getPosts}
+              resetInput={onInputChange}
+              search={searchInput}
+              onSearch={handleSearchInput}
+            />
+          }
         />
         <Route
           path="/create"
@@ -95,6 +133,9 @@ const App = () => {
               allInputs={inputs}
               onInput={onInputChange}
               allPosts={getPosts}
+              resetInput={onInputChange}
+              search={searchInput}
+              onSearch={handleSearchInput}
             />
           }
         />
@@ -109,12 +150,26 @@ const App = () => {
                       postInfo={post}
                       onUpvoteChange={handleUpvotes}
                       allPosts={getPosts}
+                      onEdit={editInput}
+                      resetInput={onInputChange}
+                      search={searchInput}
+                      onSearch={handleSearchInput}
                     />
                   }
                 />
                 <Route
                   path={`/id${post.id}edit`}
-                  element={<Post postInfo={post} />}
+                  element={
+                    <Edit
+                      allInputs={inputs}
+                      onInput={onInputChange}
+                      allPosts={getPosts}
+                      resetInput={onInputChange}
+                      editId={post.id}
+                      search={searchInput}
+                      onSearch={handleSearchInput}
+                    />
+                  }
                 />
               </>
             );

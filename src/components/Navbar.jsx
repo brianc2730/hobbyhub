@@ -1,12 +1,20 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ onReset, searchInput, handleSearch }) => {
   return (
     <header id="navbar">
       <h1>NBA Hub</h1>
-      <input type="text" name="search" placeholder="Search"></input>
-      <div id="navbar-right">
+      <input
+        type="text"
+        name="search"
+        placeholder="Search"
+        value={searchInput}
+        onChange={handleSearch}
+      ></input>
+      <div id="navbar-right" onClick={onReset}>
         <Link to="/" className="link">
           Home
         </Link>

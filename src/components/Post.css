@@ -33,3 +33,20 @@
 .comments button {
   margin: 20px 0;
 }
+
+.icons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.icons p {
+  margin-left: 10px;
+}
+
+.icon {
+  margin: 10px;
+}
+
+.icon:hover {
+  cursor: pointer;
+}
